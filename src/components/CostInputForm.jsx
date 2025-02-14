@@ -1,72 +1,88 @@
-import { useState } from "react";
+"use client"
 
-export default function CostInputForm({ onCalculate }) {
+import { useState } from "react"
+
+const CostInputForm = ({ onCalculate }) => {
   const [inputs, setInputs] = useState({
-    diameter: "",  // No default value
-    length: "",    
+    diameter: "",
     thickness: "",
+    length: "",
+    materialType: "CS",
     materialRate: "",
     fabricationRate: "",
     miscCost: "",
-    profitMargin: "", // Explicitly in percentage (%)
-    extraWeight: "",  // User-added weight
-    materialType: "CS", // Default material
-  });
+    profitMargin: "",
+    extraWeight: "",
+  })
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    
-    // Convert all numerical inputs to float, keep dropdown values as strings
-    const newValue = name === "materialType" ? value : parseFloat(value) || 0;
+    const { name, value } = e.target
+    setInputs((prev) => ({ ...prev, [name]: value }))
+  }
 
-    setInputs({ ...inputs, [name]: newValue });
-  };
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    onCalculate(inputs)
+  }
 
   return (
-    <div className="p-6 bg-white shadow-md rounded">
-      <h2 className="text-lg font-bold mb-4">Pressure Vessel Cost Estimation</h2>
-      <div className="grid grid-cols-2 gap-4">
-        {Object.keys(inputs).map((key) => (
-          key !== "materialType" ? (
-            <div key={key}>
-              <label className="block text-sm font-medium">
-                {key.replace(/([A-Z])/g, ' $1')} {key === "diameter" || key === "thickness" || key === "length" ? "(mm)" : key === "profitMargin" ? "(%)" : ""}
-              </label>
-              <input
-                type="number"
-                name={key}
-                value={inputs[key]}
-                onChange={handleChange}
-                className="mt-1 p-2 w-full border rounded"
-                placeholder={`Enter ${key.replace(/([A-Z])/g, ' $1')}`}
-                required
-              />
-            </div>
-          ) : (
-            <div key={key}>
-              <label className="block text-sm font-medium">Material Type</label>
-              <select
-                name="materialType"
-                value={inputs.materialType}
-                onChange={handleChange}
-                className="mt-1 p-2 w-full border rounded"
-              >
-                <option value="CS">Carbon Steel (CS)</option>
-                <option value="SS">Stainless Steel (SS)</option>
-                <option value="DSS">Duplex Stainless Steel (DSS)</option>
-                <option value="Monel">Monel</option>
-                <option value="Inconel">Inconel</option>
-              </select>
-            </div>
-          )
-        ))}
+    <form onSubmit={handleSubmit} className="input-form">
+      <div className="input-group">
+        <label>
+          Vessel Inside Diameter (mm):
+          <input type="number" name="diameter" value={inputs.diameter} onChange={handleChange} required />
+        </label>
+        <label>
+           Vessel Thickness (mm):
+          <input type="number" name="thickness" value={inputs.thickness} onChange={handleChange} required />
+        </label>
       </div>
-      <button
-        onClick={() => onCalculate(inputs)}
-        className="mt-4 w-full bg-blue-500 text-white p-2 rounded"
-      >
-        Calculate
-      </button>
-    </div>
-  );
+      <div className="input-group">
+        <label>
+          Vessel Length (mm):
+          <input type="number" name="length" value={inputs.length} onChange={handleChange} required />
+        </label>
+        <label>
+        Material of Construction:
+          <select name="materialType" value={inputs.materialType} onChange={handleChange}>
+            <option value="CS">CS</option>
+            <option value="SS">SS</option>
+            <option value="DSS">DSS</option>
+            <option value="Monel">Monel</option>
+            <option value="Inconel">Inconel</option>
+          </select>
+        </label>
+      </div>
+      <div className="input-group">
+        <label>
+          Material Rate:
+          <input type="number" name="materialRate" value={inputs.materialRate} onChange={handleChange} required />
+        </label>
+        <label>
+          Fabrication Rate:
+          <input type="number" name="fabricationRate" value={inputs.fabricationRate} onChange={handleChange} required />
+        </label>
+      </div>
+      <div className="input-group">
+        <label>
+          Misc Cost:
+          <input type="number" name="miscCost" value={inputs.miscCost} onChange={handleChange} required />
+        </label>
+        <label>
+          Profit Margin (%):
+          <input type="number" name="profitMargin" value={inputs.profitMargin} onChange={handleChange} required />
+        </label>
+      </div>
+      <div className="input-group">
+        <label>
+          Extra Weight:
+          <input type="number" name="extraWeight" value={inputs.extraWeight} onChange={handleChange} required />
+        </label>
+      </div>
+      <button type="submit">Calculate</button>
+    </form>
+  )
 }
+
+export default CostInputForm
+

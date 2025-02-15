@@ -19,8 +19,10 @@ export default function App() {
     const materialRate = Number.parseFloat(inputs.materialRate) || 0
     const fabricationRate = Number.parseFloat(inputs.fabricationRate) || 0
     const miscCost = Number.parseFloat(inputs.miscCost) || 0
+    const wastageCost = Number.parseFloat(inputs.wastageCost) || 0 // New Wastage Cost
     const profitMargin = Number.parseFloat(inputs.profitMargin) || 0
     const userAddedWeight = Number.parseFloat(inputs.extraWeight) || 0
+    const internalCost = Number.parseFloat(inputs.internalCost) || 0 // Internal Cost
 
     // Density based on material type
     const materialDensities = {
@@ -45,9 +47,25 @@ export default function App() {
     const shellWeight = Math.PI * diameter * thickness * length * density
     const dishWeight = 2 * 0.9 * Math.PI * Math.pow(dishRadius, 2) * thickness * density
     const supportWeight = shellWeight * 0.05
-    const nozzleWeight = shellWeight * 0.1
     const attachmentWeight = shellWeight * 0.025
-    const totalWeight = shellWeight + dishWeight + supportWeight + nozzleWeight + attachmentWeight
+    let skirtWeight = 0
+    let legSupportWeight = 0
+    let nozzleWeight = 0
+
+    if (inputs.attachmentType === "Skirt") {
+      skirtWeight = shellWeight * 0.2 // Skirt weight is 20% of shell weight
+    } else if (inputs.attachmentType === "Leg Support") {
+      legSupportWeight = shellWeight * 0.1 // Leg Support weight is 10% of shell weight
+    }
+
+    // Nozzle Type Consideration
+    if (inputs.nozzleType === "SRN") {
+      nozzleWeight = shellWeight * 0.25 // SRN nozzle weight is 25% of shell weight
+    } else if (inputs.nozzleType === "Plate/Pipe") {
+      nozzleWeight = shellWeight * 0.15 // Plate/Pipe nozzle weight is 15% of shell weight
+    }
+
+    const totalWeight = shellWeight + dishWeight + supportWeight + nozzleWeight + attachmentWeight + skirtWeight + legSupportWeight
 
     // Final Adjusted Total Weight
     const adjustedTotalWeight = totalWeight + userAddedWeight
@@ -65,7 +83,7 @@ export default function App() {
     const paintingCost = surfaceArea * 2500
 
     // Total Cost Calculation
-    const totalRMCost = rawMaterialCost + fabricationCost + weldingCost + pwhtCost + paintingCost + miscCost
+    const totalRMCost = rawMaterialCost + fabricationCost + weldingCost + pwhtCost + paintingCost + miscCost + wastageCost + internalCost
     const finalCost = totalRMCost * (1 + profitMargin / 100)
 
     setResult({
@@ -78,6 +96,8 @@ export default function App() {
       pwhtCost: pwhtCost.toFixed(2),
       paintingCost: paintingCost.toFixed(2),
       miscCost: miscCost.toFixed(2),
+      wastageCost: wastageCost.toFixed(2), // Display Wastage Cost
+      internalCost: internalCost.toFixed(2),
       totalRMCost: totalRMCost.toFixed(2),
       finalCost: finalCost.toFixed(2),
     })
@@ -85,10 +105,9 @@ export default function App() {
 
   return (
     <div className="app">
-      <h1> Pressure Vessel Cost Calculator </h1>
+      <h1> Budgetary Pressure Vessel Cost Calculator </h1>
       <CostInputForm onCalculate={calculateCost} />
       {result && <CostResult result={result} />}
     </div>
   )
 }
-

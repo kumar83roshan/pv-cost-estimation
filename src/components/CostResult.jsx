@@ -46,7 +46,7 @@ const CostResult = ({ result }) => {
           <span>INR {result.totalRMCost}</span>
         </div>
         <div className="result-item final-cost">
-          <span>Final Cost:</span>
+          <span>Quoted Cost:</span>
           <span>INR {result.finalCost}</span>
         </div>
       </div>

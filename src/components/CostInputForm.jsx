@@ -4,15 +4,21 @@ import { useState } from "react"
 
 const CostInputForm = ({ onCalculate }) => {
   const [inputs, setInputs] = useState({
-    diameter: "",
+    
     thickness: "",
+    diameter: "",
     length: "",
     materialType: "CS",
     materialRate: "",
     fabricationRate: "",
     miscCost: "",
+    miscCostDetails: "", // New Misc. Cost Details Field
+    wastageCost: "", // New Wastage Cost Field
     profitMargin: "",
     extraWeight: "",
+    internalCost: "", // Internal Cost Field
+    attachmentType: "None", // Attachment Type Field
+    nozzleType: "SRN", // New Nozzle Type Field
   })
 
   const handleChange = (e) => {
@@ -28,13 +34,13 @@ const CostInputForm = ({ onCalculate }) => {
   return (
     <form onSubmit={handleSubmit} className="input-form">
       <div className="input-group">
+      <label>
+          Vessel Thickness (mm):
+          <input type="number" name="thickness" value={inputs.thickness} onChange={handleChange} required />
+        </label>
         <label>
           Vessel Inside Diameter (mm):
           <input type="number" name="diameter" value={inputs.diameter} onChange={handleChange} required />
-        </label>
-        <label>
-           Vessel Thickness (mm):
-          <input type="number" name="thickness" value={inputs.thickness} onChange={handleChange} required />
         </label>
       </div>
       <div className="input-group">
@@ -42,8 +48,26 @@ const CostInputForm = ({ onCalculate }) => {
           Vessel Length (mm):
           <input type="number" name="length" value={inputs.length} onChange={handleChange} required />
         </label>
+        
+      <label>
+          Nozzle Type:
+          <select name="nozzleType" value={inputs.nozzleType} onChange={handleChange}>
+            <option value="SRN">SRN</option>
+            <option value="Plate/Pipe">Plate/Pipe</option>
+          </select>
+        </label>
+        </div>
+        <div className="input-group">
         <label>
-        Material of Construction:
+          Attachment Type:
+          <select name="attachmentType" value={inputs.attachmentType} onChange={handleChange}>
+            <option value="None">None</option>
+            <option value="Skirt">Skirt</option>
+            <option value="Leg Support">Leg Support</option>
+          </select>
+        </label>
+        <label>
+          Material of Construction:
           <select name="materialType" value={inputs.materialType} onChange={handleChange}>
             <option value="CS">CS</option>
             <option value="SS">SS</option>
@@ -55,7 +79,7 @@ const CostInputForm = ({ onCalculate }) => {
       </div>
       <div className="input-group">
         <label>
-          Material Rate:
+          Raw Material Rate:
           <input type="number" name="materialRate" value={inputs.materialRate} onChange={handleChange} required />
         </label>
         <label>
@@ -65,18 +89,28 @@ const CostInputForm = ({ onCalculate }) => {
       </div>
       <div className="input-group">
         <label>
-          Misc Cost:
-          <input type="number" name="miscCost" value={inputs.miscCost} onChange={handleChange} required />
+          Misc. Cost Details (Like FEA, N2 Purging Cost, etc.):
+          <input type="text" name="miscCostDetails" value={inputs.miscCostDetails} onChange={handleChange} placeholder="Enter details" />
         </label>
         <label>
-          Profit Margin (%):
-          <input type="number" name="profitMargin" value={inputs.profitMargin} onChange={handleChange} required />
+          Wastage Cost:
+          <input type="number" name="wastageCost" value={inputs.wastageCost} onChange={handleChange} required />
         </label>
       </div>
       <div className="input-group">
         <label>
           Extra Weight:
           <input type="number" name="extraWeight" value={inputs.extraWeight} onChange={handleChange} required />
+        </label>
+        <label>
+          Internal Cost (If Any):
+          <input type="number" name="internalCost" value={inputs.internalCost} onChange={handleChange} />
+        </label>
+      </div>
+      <div className="input-group">
+        <label>
+          Profit Margin (%):
+          <input type="number" name="profitMargin" value={inputs.profitMargin} onChange={handleChange} required />
         </label>
       </div>
       <button type="submit">Calculate</button>
@@ -85,4 +119,3 @@ const CostInputForm = ({ onCalculate }) => {
 }
 
 export default CostInputForm
-
